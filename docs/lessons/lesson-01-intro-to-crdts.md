@@ -72,8 +72,8 @@ In 1998, Eric Brewer conjectured (later proved by Gilbert & Lynch, 2002) that an
 
 ```mermaid
 graph TD
-    C[Consistency<br/>Every read sees the latest write] --- A[Availability<br/>Every request gets a response]
-    A --- P[Partition Tolerance<br/>System works despite network failures]
+    C["Consistency (Every read sees the latest write)"] --- A["Availability (Every request gets a response)"]
+    A --- P["Partition Tolerance (System works despite network failures)"]
     P --- C
 
     style C fill:#f38ba8,stroke:#333,color:#1e1e2e
@@ -266,7 +266,7 @@ This is **commutative** (merge(A,B) = merge(B,A)), **associative** (merge(merge(
 graph TB
     subgraph "Browser (Replica)"
         UI[React UI] --> Canvas[Canvas Renderer]
-        UI --> Tools[Tool Manager<br/>Pen/Rect/Ellipse/Text]
+        UI --> Tools["Tool Manager (Pen/Rect/Ellipse/Text)"]
         Tools --> LCRDT[Local CRDT State]
         LCRDT --> Canvas
         LCRDT <--> WC[WebSocket Client]
@@ -275,7 +275,7 @@ graph TB
     subgraph "Server (Replica)"
         WS[WebSocket Server] --> RM[Room Manager]
         RM --> SCRDT[Server CRDT State]
-        SCRDT --> Store[Storage<br/>In-Memory / Postgres]
+        SCRDT --> Store["Storage (In-Memory / Postgres)"]
     end
 
     WC <-->|Operations + Presence| WS
@@ -379,9 +379,9 @@ Over the next several lessons, we will implement these from scratch:
 ```mermaid
 graph LR
     VC[Vector Clock] --> LWW[LWW-Register]
-    LWW --> Shape[WhiteboardShape<br/>Map of LWW-Registers]
-    Shape --> SET[LWW-Element-Set<br/>Map of Shapes]
-    SET --> STATE[WhiteboardState<br/>Complete Document]
+    LWW --> Shape["WhiteboardShape (Map of LWW-Registers)"]
+    Shape --> SET["LWW-Element-Set (Map of Shapes)"]
+    SET --> STATE["WhiteboardState (Complete Document)"]
 
     style STATE fill:#89b4fa,stroke:#333,color:#1e1e2e
     style SET fill:#a6e3a1,stroke:#333,color:#1e1e2e

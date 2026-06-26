@@ -5,16 +5,16 @@
 ```mermaid
 graph TB
     subgraph Clients
-        C1[Client A<br/>React + Canvas]
-        C2[Client B<br/>React + Canvas]
-        C3[Client C<br/>React + Canvas]
+        C1["Client A (React + Canvas)"]
+        C2["Client B (React + Canvas)"]
+        C3["Client C (React + Canvas)"]
     end
 
     subgraph Server
-        WS[WebSocket Server<br/>Node.js]
+        WS["WebSocket Server (Node.js)"]
         RM[Room Manager]
         CRDT[CRDT Engine]
-        STORE[State Store<br/>In-Memory / PostgreSQL]
+        STORE["State Store (In-Memory / PostgreSQL)"]
     end
 
     C1 <-->|WebSocket| WS
