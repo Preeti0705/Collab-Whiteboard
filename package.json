@@ -1,0 +1,23 @@
+{
+  "name": "collab-whiteboard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A collaborative whiteboard built with custom CRDTs, WebSockets, React Canvas, and TypeScript.",
+  "scripts": {
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "install:all": "cd frontend && npm install && cd ../backend && npm install"
+  },
+  "keywords": [
+    "crdt",
+    "collaborative",
+    "whiteboard",
+    "websocket",
+    "distributed-systems",
+    "canvas"
+  ],
+  "author": "",
+  "license": "MIT"
+}

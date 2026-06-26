@@ -1,0 +1,21 @@
+{
+  "name": "collab-whiteboard-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Backend server for the collaborative whiteboard — WebSocket + REST + in-memory CRDT state.",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "jest --passWithNoTests"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^26.0.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^6.0.3"
+  }
+}
