@@ -7,9 +7,11 @@
 
 ## Lesson Index
 
-| # | Title | Status | Concepts | File |
-|---|---|---|---|---|
-| 1 | Introduction to Distributed State & CRDTs | 📖 In Progress | CAP theorem, Eventual consistency, CRDTs vs OT | [Lesson 1](./docs/lessons/lesson-01-intro-to-crdts.md) |
+| # | Title | Status | Concepts |
+|---|---|---|---|
+| 1 | [Lesson 1: Intro to CRDTs](./docs/lessons/lesson-01-intro-to-crdts.md) | ✅ Complete | Distributed systems theory, CAP Theorem, CRDTs vs Operational Transform |
+| 2 | [Lesson 2: Canvas & WebSockets](./docs/lessons/lesson-02-canvas-and-websockets.md) | ✅ Complete | Immediate Mode rendering, High DPI, WebSockets vs HTTP |
+| 3 | [Lesson 3: Building the CRDT Engine](./docs/lessons/lesson-03-crdt-implementation.md) | ✅ Complete | LWWRegister, LWWElementSet, CRDT convergence proofs |
 
 ---
 

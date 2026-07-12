@@ -3,22 +3,22 @@
 ## Phase 1: Foundation (Current)
 - [x] Project scaffolding (frontend + backend)
 - [x] Documentation structure
-- [ ] Lesson 1: Introduction to Distributed State & CRDTs
-- [ ] Basic Canvas rendering (HTML5 Canvas API)
-- [ ] Freehand drawing on canvas
+- [x] Lesson 1: Introduction to Distributed State & CRDTs
+- [x] Basic Canvas rendering (HTML5 Canvas API)
+- [x] Freehand drawing on canvas
 
 ## Phase 2: Real-Time Core
-- [ ] WebSocket server setup
-- [ ] Rooms — create, join, leave
-- [ ] Live collaboration — broadcast strokes to peers
+- [x] WebSocket server setup
+- [x] Rooms — create, join, leave
+- [x] Live collaboration — broadcast strokes to peers
 - [ ] Presence — who's online in a room
 - [ ] Live cursors — see other users' cursors
 
 ## Phase 3: CRDT Engine
-- [ ] LWW-Register (Last-Writer-Wins) for simple properties
-- [ ] LWW-Element-Set for shape collections
+- [x] LWW-Register (Last-Writer-Wins) for simple properties
+- [x] LWW-Element-Set for shape collections
 - [ ] Operation log & vector clocks
-- [ ] State merging & conflict resolution
+- [x] State merging & conflict resolution
 - [ ] Undo / Redo with CRDTs
 
 ## Phase 4: Shapes & Tools
