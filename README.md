@@ -6,6 +6,22 @@ A **production-quality collaborative whiteboard** built from scratch with custom
 
 ---
 
+## ✨ Features
+
+- **Real-time collaboration** — Draw together with live cursor tracking
+- **Custom CRDTs** — LWW-Register & LWW-Element-Set built from scratch
+- **Multi-shape tools** — Pen, Rectangle, Ellipse, Line, Arrow, Text
+- **Select & transform** — Click to select, drag to move, Delete to remove
+- **Offline support** — IndexedDB queue with auto-reconnect & exponential backoff
+- **SQLite persistence** — Room state survives server restarts
+- **JWT authentication** — Register/login with bcrypt password hashing
+- **Undo/Redo** — Ctrl+Z / Ctrl+Shift+Z with local snapshot stack
+- **Export** — Download your board as PNG, SVG, or JSON
+- **Live presence** — See who's online with colored cursors and name badges
+- **Responsive UI** — Adapts to mobile and desktop screens
+
+---
+
 ## 🧠 What You'll Learn
 
 | Concept | Where It Appears |
@@ -14,10 +30,12 @@ A **production-quality collaborative whiteboard** built from scratch with custom
 | Operational Transform vs CRDTs | Design decisions |
 | Eventual Consistency | Multi-client sync |
 | Conflict Resolution | Concurrent shape edits |
-| Offline Editing | Local-first architecture |
+| Offline Editing | IndexedDB queue + CRDT replay |
 | WebSockets | Real-time transport |
 | Canvas Rendering | 60fps drawing engine |
 | Replication & Synchronization | State convergence |
+| JWT Authentication | Stateless session management |
+| Strategy Pattern | Tool system architecture |
 
 ---
 
@@ -25,10 +43,12 @@ A **production-quality collaborative whiteboard** built from scratch with custom
 
 | Layer | Technology |
 |---|---|
-| Frontend | React, Canvas API, TypeScript |
-| Backend | Node.js, TypeScript, WebSocket |
-| Database | PostgreSQL (later) / In-memory (now) |
+| Frontend | React 19, Canvas API, TypeScript, Vite |
+| Backend | Node.js, Express, TypeScript, `ws` |
+| Database | SQLite (via better-sqlite3) |
+| Auth | JWT (jsonwebtoken) + bcrypt |
 | Protocol | Custom CRDT over WebSocket |
+| Offline | IndexedDB |
 
 ---
 
@@ -36,20 +56,34 @@ A **production-quality collaborative whiteboard** built from scratch with custom
 
 ```
 collab-whiteboard/
-├── frontend/          # React + Vite + Canvas
+├── frontend/              # React + Vite + Canvas
 │   └── src/
-├── backend/           # Node + WebSocket server
+│       ├── canvas/        # Rendering engine
+│       ├── crdt/          # LWWRegister, LWWElementSet, UndoManager
+│       ├── hooks/         # usePresence
+│       ├── network/       # WebSocketClient
+│       ├── storage/       # OfflineQueue (IndexedDB)
+│       ├── tools/         # 7 drawing tools (Strategy pattern)
+│       ├── types/         # Shape, WSMessage types
+│       └── ui/            # AuthScreen, CanvasBoard, Toolbar, ExportMenu, PresenceBar
+├── backend/               # Node + WebSocket + REST
 │   └── src/
-├── docs/              # Extended documentation
-├── ROADMAP.md         # Feature timeline
-├── ARCHITECTURE.md    # System design
-├── DESIGN.md          # UI/UX design system
-├── LESSONS.md         # Master lesson index
-├── KNOWLEDGE_GRAPH.md # Concept dependency graph
-├── TESTING.md         # Test strategy
-├── PERFORMANCE.md     # Benchmarks & optimization
-├── INTERVIEW_PREP.md  # System design Q&A
-└── CHANGELOG.md       # Version history
+│       ├── auth/          # AuthController, AuthMiddleware (JWT)
+│       ├── crdt/          # Server-side CRDT
+│       ├── network/       # WebSocketServer
+│       ├── rooms/         # RoomManager
+│       └── storage/       # SQLiteStore, UserStore
+├── docs/                  # 7 educational lessons
+├── guide.md               # Step-by-step build log
+├── ROADMAP.md             # Feature timeline
+├── ARCHITECTURE.md        # System design diagrams
+├── DESIGN.md              # UI/UX design system
+├── LESSONS.md             # Master lesson index
+├── KNOWLEDGE_GRAPH.md     # Concept dependency graph
+├── TESTING.md             # Test strategy
+├── PERFORMANCE.md         # Benchmarks & optimization
+├── INTERVIEW_PREP.md      # System design Q&A
+└── CHANGELOG.md           # Version history
 ```
 
 ---
@@ -67,12 +101,15 @@ npm run dev:backend
 npm run dev:frontend
 ```
 
+Open http://localhost:5173 — register an account or continue as a guest.
+
 ---
 
 ## 📖 Learning Path
 
-See [LESSONS.md](./LESSONS.md) for the full curriculum.  
-See [ROADMAP.md](./ROADMAP.md) for the feature timeline.
+See [LESSONS.md](./LESSONS.md) for the full curriculum (7 lessons).  
+See [ROADMAP.md](./ROADMAP.md) for the feature timeline.  
+See [guide.md](./guide.md) for the step-by-step build log with every command and code change.
 
 ---
 
