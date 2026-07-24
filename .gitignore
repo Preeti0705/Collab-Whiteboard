@@ -29,3 +29,11 @@ coverage/
 
 # TypeScript
 *.tsbuildinfo
+
+# SQLite Databases
+*.db
+*.db-shm
+*.db-wal
+
+# Scripts
+recover.py

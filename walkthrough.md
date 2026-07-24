@@ -19,11 +19,12 @@ Instead of relying on external libraries for complex synchronization, this proje
 
 ## 2. High-Level Architecture
 
-The system follows a classic client-server model but utilizes distributed state synchronization:
+The system follows a client-server model with distributed state synchronization:
 
 - **Clients (Frontend)**: React applications rendering on an HTML5 Canvas. Each client holds a local **replica** of the whiteboard state.
-- **Server (Backend)**: A Node.js WebSocket server that acts as a relay and holds the authoritative server replica.
-- **State Synchronization**: Uses CRDTs over WebSockets. When a user draws, the local state is updated optimistically (instantly). The operation is then sent to the server, which broadcasts it to other peers. 
+- **Server (Backend)**: A Node.js WebSocket + REST server that acts as a relay, holds the authoritative CRDT replica, and persists state to SQLite.
+- **State Synchronization**: Uses CRDTs over WebSockets. When a user draws, the local state is updated optimistically (instantly). The operation is then sent to the server, which broadcasts it to other peers.
+- **Authentication**: JWT-based stateless auth. Users register/login via REST API, and the JWT is passed to the WebSocket connection.
 
 ### Why CRDTs?
 As detailed in `docs/lessons/lesson-01-intro-to-crdts.md`, the system chooses Eventual Consistency (AP in the CAP theorem). CRDTs are chosen over Operational Transform (OT) because:
@@ -39,10 +40,27 @@ The project is structured as a monorepo containing the frontend, backend, and ex
 
 ```text
 collab-whiteboard/
-├── frontend/          # React + Vite + Canvas client
-├── backend/           # Node.js WebSocket server
-├── docs/              # In-depth educational lessons
-└── *.md               # Root documentation (Architecture, Design, etc.)
+├── frontend/              # React + Vite + Canvas client
+│   └── src/
+│       ├── canvas/        # CanvasEngine — rendering loop
+│       ├── crdt/          # LWWRegister, LWWElementSet, UndoManager
+│       ├── hooks/         # usePresence — live cursor hook
+│       ├── network/       # WebSocketClient with offline queue
+│       ├── storage/       # OfflineQueue (IndexedDB)
+│       ├── tools/         # Tool interface + 7 tools (Strategy pattern)
+│       ├── types/         # Shape, WSMessage, ToolType definitions
+│       └── ui/            # React components (Canvas, Toolbar, Auth, Export, Presence)
+├── backend/               # Node.js WebSocket + REST server
+│   └── src/
+│       ├── auth/          # AuthController (JWT), AuthMiddleware
+│       ├── crdt/          # Server-side LWWRegister, LWWElementSet
+│       ├── network/       # WebSocketServer
+│       ├── rooms/         # RoomManager (presence, broadcast, state)
+│       ├── storage/       # SQLiteStore (rooms), UserStore (auth)
+│       └── types.ts       # Server-side Shape, WSMessage types
+├── docs/                  # In-depth educational lessons
+│   └── lessons/           # 7 lessons covering CRDTs → Auth
+└── *.md                   # Root documentation (Architecture, Design, etc.)
 ```
 
 ### 3.1. Root Documentation
@@ -50,11 +68,12 @@ The root directory is rich with markdown files that guide the project's developm
 - `README.md`: The entry point, explaining what the project is and how to run it.
 - `ARCHITECTURE.md`: Visualizes the data flow and module boundaries using Mermaid diagrams.
 - `DESIGN.md`: Outlines the UI/UX design system, including CSS variables, typography, and cursor design.
-- `ROADMAP.md`: The timeline of features (currently in Phase 1: Foundation).
+- `ROADMAP.md`: The timeline of features across 6 phases.
 - `KNOWLEDGE_GRAPH.md`: A mapping of distributed systems concepts and where they are taught.
-- `LESSONS.md`: The master index for the curriculum.
-- `PERFORMANCE.md` & `TESTING.md`: Define the performance targets (e.g., 60fps, <50ms latency) and testing strategies (unit, integration, property-based testing).
+- `LESSONS.md`: The master index for the curriculum (7 lessons).
+- `PERFORMANCE.md` & `TESTING.md`: Define the performance targets and testing strategies.
 - `INTERVIEW_PREP.md`: System design questions derived directly from building this app.
+- `guide.md`: This file — the step-by-step build log.
 
 ### 3.2. Frontend (`/frontend`)
 A modern React application built for high performance.
@@ -64,32 +83,52 @@ A modern React application built for high performance.
   - `vite.config.ts`: Standard React Vite configuration.
   - `tsconfig.*.json`: Multiple configs splitting app logic and node logic.
 - **Source Code (`/frontend/src`)**:
-  - `main.tsx` / `App.tsx`: Mounts the `<CanvasBoard />` component.
-  - `canvas/CanvasEngine.ts`: Manages the raw HTML5 Canvas rendering loop.
-  - `network/WebSocketClient.ts`: Manages the connection to the backend.
-  - `index.css`: Global design tokens.
+  - `main.tsx` / `App.tsx`: Mounts the app, routes between `AuthScreen` and `CanvasBoard`.
+  - `canvas/CanvasEngine.ts`: Manages the raw HTML5 Canvas rendering loop with 5 rendering layers (background, dot grid, shapes, selection handles, cursors).
+  - `crdt/LWWRegister.ts`: The fundamental CRDT — a single value with timestamp + clientId for conflict resolution.
+  - `crdt/LWWElementSet.ts`: A CRDT map of shapes, each independently mergeable.
+  - `crdt/UndoManager.ts`: Local undo/redo stack using before/after snapshots.
+  - `hooks/usePresence.ts`: React hook for live presence and cursor tracking.
+  - `network/WebSocketClient.ts`: WebSocket connection with auto-reconnect, exponential backoff, and offline queue integration.
+  - `storage/OfflineQueue.ts`: IndexedDB-based operation queue for offline support.
+  - `tools/`: 7 tool classes implementing the Strategy pattern (Pen, Rectangle, Ellipse, Line, Text, Select, plus Tool interface).
+  - `ui/`: React components — `AuthScreen`, `CanvasBoard`, `Toolbar`, `PresenceBar`, `ExportMenu`.
+  - `index.css`: Global design tokens (CSS variables).
 
 ### 3.3. Backend (`/backend`)
-A lightweight Node.js server.
+A Node.js server combining REST API and WebSocket.
 
 - **Tooling**: Uses **TypeScript** and runs via `ts-node-dev` for hot-reloading during development.
 - **Source Code (`/backend/src`)**:
-  - `index.ts`: Integrates an Express HTTP server with a WebSocket server (`ws`).
-  - `network/WebSocketServer.ts`: Handles incoming WS connections and message parsing.
-  - `rooms/RoomManager.ts`: Groups connected clients and broadcasts real-time events.
+  - `index.ts`: Express app with CORS, JSON parsing, auth routes, and WebSocket attachment.
+  - `auth/AuthController.ts`: REST endpoints for `/api/auth/register` and `/api/auth/login`.
+  - `auth/AuthMiddleware.ts`: JWT verification for WebSocket upgrade requests.
+  - `network/WebSocketServer.ts`: Handles incoming WS connections, authenticates via JWT, and routes messages.
+  - `rooms/RoomManager.ts`: Groups connected clients, manages CRDT state, tracks presence, and persists to SQLite.
+  - `storage/SQLiteStore.ts`: Persists room CRDT state to SQLite with debounced writes.
+  - `storage/UserStore.ts`: Persists user accounts to SQLite (email, bcrypt hash).
+  - `crdt/`: Server-side LWWRegister and LWWElementSet (mirrors frontend).
 
 ### 3.4. Lessons (`/docs/lessons`)
-- `lesson-01-intro-to-crdts.md`: A massive, in-depth guide on distributed state. It breaks down the CAP theorem, consistency models, how industry leaders like Figma handle collaboration, and explains why this project uses a Last-Writer-Wins (LWW) Register approach per property.
+- `lesson-01-intro-to-crdts.md`: Distributed state, CAP theorem, CRDTs vs OT.
+- `lesson-02-canvas-and-websockets.md`: Immediate Mode rendering, WebSockets.
+- `lesson-03-crdt-implementation.md`: LWWRegister, LWWElementSet, convergence proofs.
+- `lesson-04-presence-and-cursors.md`: Ephemeral state, cursor throttling.
+- `lesson-05-shapes-and-tools.md`: Strategy pattern, hit testing, z-ordering.
+- `lesson-06-offline-and-persistence.md`: IndexedDB, exponential backoff, SQLite.
+- `lesson-07-auth-and-export.md`: JWT, bcrypt, WebSocket auth, export formats.
 
 ---
 
 ## 4. Current State & Next Steps
 
-**Current Status**: The project is at **Phase 3: CRDT Engine**. The foundational LWWRegister and LWWElementSet have been implemented, meaning the collaborative state now converges deterministically without data loss.
+**Current Status**: The project is **feature-complete through Phase 6**. All core features are implemented: CRDT-based collaboration, multi-shape tools, offline support, persistence, authentication, export, and undo/redo.
 
-**What's Next (Phase 4)**:
-1. **Shapes & Tools**: Abstracting the engine to support Rectangles, Ellipses, Text, and Selection tools.
-2. **Offline Support**: Implementing IndexedDB persistence and reconciliation on reconnection.
+**What's Next (Future Work)**:
+1. **Operation Log & Vector Clocks** — Replace timestamps with vector clocks for causal ordering.
+2. **Version History** — Time-travel through board snapshots.
+3. **Performance Optimization** — Spatial indexing, dirty-rect rendering.
+4. **Deployment** — Vercel (frontend) + Railway/Render (backend).
 
 ---
 
@@ -109,5 +148,7 @@ To work on this codebase, you can use the convenience scripts defined in the roo
    ```bash
    npm run dev:frontend
    ```
+4. Open http://localhost:5173 — you'll see the login screen.
+5. Register an account or click "Continue as Guest" to enter the whiteboard.
 
 Explore the `docs/` and root markdown files as you build to understand the *why* behind the code!
