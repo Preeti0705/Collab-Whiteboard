@@ -44,5 +44,3 @@
 - [ ] Deployment (Vercel) *(planned)*
 
 ---
-
-> Each bullet becomes a lesson in [LESSONS.md](./LESSONS.md).
