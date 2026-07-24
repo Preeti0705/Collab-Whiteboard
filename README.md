@@ -107,7 +107,6 @@ Open http://localhost:5173 — register an account or continue as a guest.
 
 ## 📖 Learning Path
 
-See [LESSONS.md](./LESSONS.md) for the full curriculum (7 lessons).  
 See [ROADMAP.md](./ROADMAP.md) for the feature timeline.  
 See [guide.md](./guide.md) for the step-by-step build log with every command and code change.
 
@@ -122,6 +121,3 @@ See [guide.md](./guide.md) for the step-by-step build log with every command and
 
 ---
 
-## 📄 License
-
-MIT
