@@ -1,4 +1,4 @@
-# 🎨 Collab Whiteboard
+# CoCanvas - Collab Whiteboard
 
 A **production-quality collaborative whiteboard** built from scratch with custom CRDTs, WebSockets, React Canvas, and TypeScript.
 
@@ -6,7 +6,7 @@ A **production-quality collaborative whiteboard** built from scratch with custom
 
 ---
 
-## ✨ Features
+## Features
 
 - **Real-time collaboration** — Draw together with live cursor tracking
 - **Custom CRDTs** — LWW-Register & LWW-Element-Set built from scratch
@@ -22,7 +22,7 @@ A **production-quality collaborative whiteboard** built from scratch with custom
 
 ---
 
-## 🧠 What You'll Learn
+## What You'll Learn
 
 | Concept | Where It Appears |
 |---|---|
@@ -39,7 +39,7 @@ A **production-quality collaborative whiteboard** built from scratch with custom
 
 ---
 
-## 🏗️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -52,7 +52,7 @@ A **production-quality collaborative whiteboard** built from scratch with custom
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 collab-whiteboard/
@@ -88,7 +88,7 @@ collab-whiteboard/
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # Install all dependencies
@@ -105,14 +105,14 @@ Open http://localhost:5173 — register an account or continue as a guest.
 
 ---
 
-## 📖 Learning Path
+## Learning Path
 
 See [ROADMAP.md](./ROADMAP.md) for the feature timeline.  
 See [guide.md](./guide.md) for the step-by-step build log with every command and code change.
 
 ---
 
-## 🤝 Philosophy
+## Philosophy
 
 - **No CRDT libraries** — we build our own from scratch.
 - **One feature at a time** — each feature is a distributed systems lesson.
