@@ -108,7 +108,6 @@ Open http://localhost:5173 — register an account or continue as a guest.
 ## Learning Path
 
 See [ROADMAP.md](./ROADMAP.md) for the feature timeline.  
-See [guide.md](./guide.md) for the step-by-step build log with every command and code change.
 
 ---
 
