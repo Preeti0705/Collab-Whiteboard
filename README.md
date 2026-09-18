@@ -111,12 +111,4 @@ See [ROADMAP.md](./ROADMAP.md) for the feature timeline.
 
 ---
 
-## Philosophy
-
-- **No CRDT libraries** — we build our own from scratch.
-- **One feature at a time** — each feature is a distributed systems lesson.
-- **Explain first, code second** — theory always precedes implementation.
-- **Production quality** — this is a portfolio project, not a toy.
-
----
 
