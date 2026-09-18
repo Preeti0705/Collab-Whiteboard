@@ -73,17 +73,7 @@ collab-whiteboard/
 │       ├── network/       # WebSocketServer
 │       ├── rooms/         # RoomManager
 │       └── storage/       # SQLiteStore, UserStore
-├── docs/                  # 7 educational lessons
-├── guide.md               # Step-by-step build log
-├── ROADMAP.md             # Feature timeline
-├── ARCHITECTURE.md        # System design diagrams
-├── DESIGN.md              # UI/UX design system
-├── LESSONS.md             # Master lesson index
-├── KNOWLEDGE_GRAPH.md     # Concept dependency graph
-├── TESTING.md             # Test strategy
-├── PERFORMANCE.md         # Benchmarks & optimization
-├── INTERVIEW_PREP.md      # System design Q&A
-└── CHANGELOG.md           # Version history
+
 ```
 
 ---
